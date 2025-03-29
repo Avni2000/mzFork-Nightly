@@ -22,7 +22,8 @@ public class UserSimulation
     public static void Main()
     {
         // Define file paths
-        string exePath = @"C:\Program Files\Informed-Proteomics\MSPathFinderT";
+
+        string exePath = @"C:\Program Files\Informed-Proteomics\MSPathFinderT.exe"; //MSPathFinderT executeable.
         string spectraPath = @"C:\Users\avnib\Desktop\SEOutput\RAW\Ecoli_SEC4_F6.raw";
         string datPath = @"C:\Users\avnib\Desktop\Databases\uniprotkb_proteome_UP000005640_2025_03_11.fasta";
         string outputPath = @"C:\Users\avnib\Desktop\SEOutput\MST";
@@ -30,7 +31,13 @@ public class UserSimulation
 
         // Initialize HolyDatasetMST
         HolyDatasetMST holyDataset = new HolyDatasetMST(exePath, spectraPath, datPath);
+        // Runs MSPathFinderT locally. This is a VERY long process, but it's in the process of being optimized
 
         Console.WriteLine("HolyDatasetMST initialized successfully.");
     }
 }
+
+```
+**Features soon to come: **
+- Initialize a class with a certain TopPIC executeable, perform the same action. 
+- Create an SQL database with data from all 3 search engines
