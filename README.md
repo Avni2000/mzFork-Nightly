@@ -38,6 +38,6 @@ public class UserSimulation
 }
 
 ```
-**Features soon to come: **
+**Features soon to come:**
 - Initialize a class with a certain TopPIC executeable, perform the same action. 
 - Create an SQL database with data from all 3 search engines
