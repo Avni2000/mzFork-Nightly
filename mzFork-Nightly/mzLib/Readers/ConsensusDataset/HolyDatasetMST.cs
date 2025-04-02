@@ -8,17 +8,33 @@ using System.Threading.Tasks;
 using Readers;
 using System.IO;
 using TopDownProteomics.IO.Resid;
+using MathNet.Numerics.RootFinding;
+using ThermoFisher.CommonCore.Data;
+using CsvHelper;
+using Readers.ExternalResults.BaseClasses;
 
 namespace Readers.ConsensusDataset
 {
     public class HolyDatasetMST
     {
+        private string outPath;
+        private string exePath;
+        private string spectraPath;
+
+        private string dataPath;
+
         /*
          * Returns output given by outPath, user Defined
          */
         public HolyDatasetMST(string exePath, string spectraPath, string dataPath,
             string outPath) //TODO given this has never ran to completion, more tests needed.
         {
+            //initialize to class variables
+            this.exePath = exePath;
+            this.spectraPath = spectraPath;
+            this.dataPath = dataPath;
+            this.outPath = outPath;
+
             exePath = @"" + exePath;
             spectraPath = @"" + spectraPath;
             dataPath = @"" + dataPath;
@@ -38,10 +54,7 @@ namespace Readers.ConsensusDataset
             };
 
             process.Start();
-
             process.WaitForExit();
-
-
         }
 
         /*
@@ -49,34 +62,26 @@ namespace Readers.ConsensusDataset
          */
         public HolyDatasetMST(string exePath, string spectraPath, string dataPath) : this(exePath, spectraPath,
             dataPath,
-            Path.GetDirectoryName(@"" + spectraPath))
+            Path.GetDirectoryName(@"" + spectraPath)) //out path is the same as the directory of the spectraPath
         {
+            outPath = Path.ChangeExtension(spectraPath, "_IcTda.tsv");
             //result handling
-            MsPathFinderTResultFile
-                result = new MsPathFinderTResultFile(Path.ChangeExtension(spectraPath,
-                    "_IcTda.tsv")); //suppose spectraPath.raw -> spectraPath_IcTda.tsv. TODO double check. Small thing.
+            MsPathFinderTResultFile result =
+                new MsPathFinderTResultFile(Path.ChangeExtension(spectraPath,
+                    "_IcTda.tsv")); //suppose spectraPath.raw -> spectraPath_IcTda.tsv. TODO double check. Just a guess.
             var dict = result.ToDictListList();
 
-
         }
-
-
-
-        class userSimulation //what would the user have in main? TODO remove, for reference only.
+        public List<IResult> ToList(MsPathFinderTResultFile resultFile)
         {
-            string exePath = @"C:\Program Files\Informed-Proteomics\MSPathFinderT";
-            string spectraPath = @"C:\Users\avnib\Desktop\SEOutput\RAW\Ecoli_SEC4_F6.raw";
-
-            string datPath =
-                @"C:\Users\avnib\Desktop\Databases\uniprotkb_proteome_UP000005640_2025_03_11.fasta\uniprotkb_proteome_UP000005640_2025_03_11.fasta";
-
-            string output = @"C:\Users\avnib\Desktop\SEOutput\MST";
-            string tsv = @"C:\Users\avnib\Desktop\02-17-20_jurkat_td_rep1_fract1_IcTda.tsv";
-
-
+            List<IResult> results = new List<IResult>();
+            using var csv = new CsvReader(new StreamReader(outPath), MsPathFinderTResult.CsvConfiguration);
+            var Results = csv.GetRecords<MsPathFinderTResult>().ToList();
+            foreach (MsPathFinderTResult res in Results)
+            { 
+                results.Add(res);
+            }
+            return results;
         }
-
-
-
     }
 }

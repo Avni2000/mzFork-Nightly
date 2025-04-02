@@ -50,7 +50,7 @@ namespace Readers
         #region Abstract Members
 
         public abstract SupportedFileType FileType { get; }
-        public abstract Software Software { get; set; } 
+        public abstract Software Software { get; set; }
 
         /// <summary>
         /// Load Results to the Results List from the given filepath

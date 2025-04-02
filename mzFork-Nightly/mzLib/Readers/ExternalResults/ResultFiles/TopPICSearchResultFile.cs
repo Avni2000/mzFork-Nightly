@@ -81,6 +81,69 @@ namespace Readers
             FixedModifications = new List<string>();
             AllowedNTerminalForms = new List<string>();
         }
+        /// <summary>
+        /// Convert file results to dictionary of lists of lists as string values.
+        /// </summary>
+        /// <returns>
+        /// A dictionary with the base sequence as the key and a list of lists of string values as the value
+        /// </returns>
+        public Dictionary<string, List<List<string>>> ToDictListList()
+        {
+            var dictList = new Dictionary<string, List<List<string>>>();
+            using var csv = new CsvReader(new StreamReader(FilePath), MsPathFinderTResult.CsvConfiguration);
+            Results = csv.GetRecords<ToppicPrsm>().ToList();
+
+            foreach (ToppicPrsm res in Results)
+            {
+                string baseKey = res.BaseSequence;
+                var valuesList = new List<string>
+                {
+                    res.OneBasedScanNumber.ToString(),
+                    res.BaseSequence,
+                    res.ProteinDescription,
+                    res.EValue.ToString("0.00E+00"),
+                    res.FileNameWithoutExtension,
+                    res.PrsmID.ToString(),
+                    res.SpectrumId.ToString(),
+                    res.DissociationType.ToString(),
+                    res.RetentionTime.ToString(),
+                    res.PeakCount.ToString(),
+                    res.PrecursorCharge.ToString(),
+                    res.PrecursorMass.ToString(),
+                    res.AdjustedPrecursorMass.ToString(),
+                    res.ProteoformId.ToString(),
+                    res.FeatureIntensity.ToString("0.00E+00"),
+                    res.FeatureScore.ToString(),
+                    res.FeatureApexTime.ToString(),
+                    res.ProteinHitsCount.ToString(),
+                    res.ProteinAccession,
+                    res.FirstResidue.ToString(),
+                    res.LastResidue.ToString(),
+                    res.SpecialAminoAcids ?? string.Empty,
+                    res.FullSequence,
+                    res.FullSequenceMass.ToString(),
+                    res.ProteinNTerminalForm,
+                    res.FixedPTMs ?? string.Empty,
+                    res.UnexpectedModificationsCount.ToString(),
+                    res.UnexpectedModifications ?? string.Empty,
+                    res.VariableModificationsCount.ToString(),
+                    res.VariableModifications ?? string.Empty,
+                    res.MIScore?.ToString() ?? "null",
+                    res.MatchedPeaksCount.ToString(),
+                    res.MatchedFragmentIonsCount.ToString(),
+                    res.QValueSpectrumLevel?.ToString() ?? "null",
+                    res.QValueProteoformLevel?.ToString() ?? "null"
+                };
+            
+            if (!dictList.ContainsKey(baseKey))
+                {
+                    dictList[baseKey] = new List<List<string>>();
+                }
+                dictList[baseKey].Add(valuesList);
+            }
+
+            return dictList;
+        }
 
 
         public override void LoadResults()
