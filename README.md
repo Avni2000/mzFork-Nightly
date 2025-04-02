@@ -2,6 +2,9 @@
 
 **Note**: The only documentation in this ReadMe pertains solely to the ConsensusDataset project, and any further uses of it down the line.
 
+
+**For more up to date information, check out the readme on the develop branch**
+
 ## Brief Description
 
 How do we validate massive amounts of search result data from three different search engines? Namely: **MSPathFinderT, MetaMorpheus, and TopPic**.  
