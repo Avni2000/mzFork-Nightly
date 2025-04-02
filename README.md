@@ -38,65 +38,16 @@ public class UserSimulation
 }
 
 ```
-Obviously, the user shouldn't have to input the exepath at all. Coming soon is a search function, here's some pseudocode I wrote out in Notepad for fun-- 
 
-```
-FUNCTION FindExecutable(toolName, predefinedPaths, searchDirectories):
-    # 1. Check predefined paths
-    FOR each path IN predefinedPaths:
-        IF FileExists(path + "\\" + toolName):
-            RETURN path + "\\" + toolName  // Found the executable
-
-
-    # 2. Recursively search common directories
-    FOR each directory IN searchDirectories:
-        result = RecursiveSearch(directory, toolName)
-        IF result IS NOT NULL:
-            RETURN result  // found in recursive search
-
-    RETURN NULL  // Executable not found
-
-
-FUNCTION RecursiveSearch(directory, toolName):
-    IF NOT DirectoryExists(directory):
-        RETURN NULL  // skip if directory doesn't exist
-
-    files = GetFilesInDirectory(directory)
-    FOR each file IN files:
-        IF file == toolName:
-            RETURN directory + "\\" + toolName  // Found
-
-    subDirs = GetSubDirectories(directory)
-    FOR each subDir IN subDirs:
-        result = RecursiveSearch(subDir, toolName)
-        IF result IS NOT NULL:
-            RETURN result 
-
-    RETURN NULL //not found in a certain dir
-
-```
-
-Example Usage:
-
-```
-predefinedPaths = ["C:\\Program Files\\MSPathFinderT", "C:\\Program Files (x86)\\MSPathFinderT"]
-searchDirectories = ["C:\\Users\\Public\\Downloads", "C:\\Users\\Public\\Desktop", "C:\\Program Files", "C:\\Program Files (x86)"]
-
-msPathfinderPath = FindExecutable("MSPathFinderT.exe", predefinedPaths, searchDirectories)
-topPicPath = FindExecutable("TopPic.exe", ["C:\\Program Files\\TopPic"], searchDirectories)
-
-IF msPathfinderPath IS NOT NULL:
-    PRINT "MSPathFinderT found at: " + msPathfinderPath
-ELSE:
-    PRINT "MSPathFinderT not found."
-
-IF topPicPath IS NOT NULL:
-    PRINT "TopPic found at: " + topPicPath
-ELSE:
-    PRINT "TopPic not found."
-```
 
 **Features soon to come:**
-- Initialize a class with a certain TopPIC executeable, perform the same action. 
+
+In the latest commit to develop, initialization looks something like this, but with limited functionality. 
+```C#
+Handler handle = new Handler(SpectraPath, DataPath, OutPath) //implements a recursive searching function, initializes constructors for HolyDatasetMST, HolyDatasetMM, HolyDatasetTopPIC.
+```
+From there, the idea is to call toList Methods from Each HolyDataset class, and given that each program's result file implements a certain interface (holding values like Base Sequence, Scan number, ProteinDescription, etc.)-- return a list of interfaces.
+- Initialize a class with a certain TopPIC and MetaMorpheus executeable, perform the same search with identical parameters. 
+
 - Create an SQL database with data from all 3 search engines
 
