@@ -20,7 +20,6 @@ namespace Readers.ConsensusDataset
         private string outPath;
         private string exePath;
         private string spectraPath;
-
         private string dataPath;
 
         /*
@@ -69,10 +68,10 @@ namespace Readers.ConsensusDataset
             MsPathFinderTResultFile result =
                 new MsPathFinderTResultFile(Path.ChangeExtension(spectraPath,
                     "_IcTda.tsv")); //suppose spectraPath.raw -> spectraPath_IcTda.tsv. TODO double check. Just a guess.
-            var dict = result.ToDictListList();
+            var dict = ToCertainList(result);
 
         }
-        public List<IResult> ToList(MsPathFinderTResultFile resultFile)
+        public List<IResult> ToCertainList(MsPathFinderTResultFile resultFile)
         {
             List<IResult> results = new List<IResult>();
             using var csv = new CsvReader(new StreamReader(outPath), MsPathFinderTResult.CsvConfiguration);

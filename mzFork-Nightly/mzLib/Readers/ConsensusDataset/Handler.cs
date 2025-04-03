@@ -108,62 +108,7 @@ namespace Readers.ConsensusDataset
                     }
                     break;
             }
-
             return null;
         }
-
-
-        /*
-         public Dictionary<string, List<List<string>>> ToDictListList()
-        {
-            var dictList = new Dictionary<string, List<List<string>>>();
-            using var csv = new CsvReader(new StreamReader(FilePath), MsPathFinderTResult.CsvConfiguration);
-            Results = csv.GetRecords<MsPathFinderTResult>().ToList();
-
-            foreach (MsPathFinderTResult res in Results)
-            {
-                string baseKey = res.BaseSequence;
-                var valuesList = new List<string>
-                {
-                    res.OneBasedScanNumber.ToString(),
-                    res.PreviousResidue.ToString(),
-                    res.BaseSequence,
-                    res.NextResidue.ToString(),
-                    res.Modifications,
-                    res.ChemicalFormula.ToString(),
-                    res.ProteinName,
-                    res.ProteinDescription,
-                    res.Length.ToString(),
-                    res.OneBasedStartResidue.ToString(),
-                    res.OneBasedEndResidue.ToString(),
-                    res.Charge.ToString(),
-                    res.MostAbundantIsotopeMz.ToString(),
-                    res.MonoisotopicMass.ToString(),
-                    res.Ms1Features.ToString(),
-                    res.NumberOfMatchedFragments.ToString(),
-                    res.Probability.ToString(),
-                    res.SpecEValue.ToString(),
-                    res.EValue.ToString(),
-                    res.QValue.ToString(),  
-                    res.PepQValue.ToString(),
-                    res.FileNameWithoutExtension
-                };
-
-                if (!dictList.ContainsKey(baseKey))
-                {
-                    dictList[baseKey] = new List<List<string>>();
-                }
-
-                dictList[baseKey].Add(valuesList);
-            }
-
-            return dictList;
-        }
-        
-         */
-
-
-
-
     }
 }
