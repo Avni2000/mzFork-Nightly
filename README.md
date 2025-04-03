@@ -1,53 +1,84 @@
-# mzLib
+**Progress Tracking:**
 
-A library for mass spectrometry projects.
+Highlights:
+- Construction of Full Sequence from Base and Modifications:
+  
+Implemented a method to construct a full sequence by appending modifications at the correct positions in the base sequence within the MsPathFinderTResult class. 
+Given Base Sequence = PEPTIDE and mods = Oxydation, 1  Methylation, 3  Phosphorylation, 5
 
-[![GitHub Action Builds](https://github.com/smith-chem-wisc/mzLib/actions/workflows/dotnet.yml/badge.svg)](https://github.com/smith-chem-wisc/mzLib/actions/workflows/dotnet.yml)
-[![codecov](https://codecov.io/gh/smith-chem-wisc/mzLib/branch/master/graph/badge.svg)](https://codecov.io/gh/smith-chem-wisc/mzLib)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/10000/badge.svg)](https://scan.coverity.com/projects/mzlib)
-[![NuGet Badge](https://buildstats.info/nuget/mzLib)](https://www.nuget.org/packages/mzLib/)
+```
+FullSeqeunce = P(Oxydation)EP(Methylation)TI(Phosphorylation)DE
+```
 
-![image](https://user-images.githubusercontent.com/16841846/113908189-df7a6e80-979b-11eb-9a2d-571a53e167ac.png)
+- Creating an Interface for All Result Files:
+  
+Introduced an interface that standardizes the structure for result files, defining properties such as:
+OneBasedScanNumber, BaseSequence, FullSequence, Accession, IsDecoy, Modifications, Charge, and Mass. **Allows for consolidated set of information across search engines.**
 
-NuGet packages are released here: https://www.nuget.org/packages/mzLib/
+- Creating a Method to Make a List of Said Interface in Each Class of Consensus Dataset:
+  
+Added methods in the HolyDatasetMST class to convert result files into a list of IResult interface implementations, which allows for unified handling and processing of different types of results across the consensus dataset.
 
-GitHub release tags are recoreded here: https://github.com/smith-chem-wisc/mzLib/releases
 
-# Usage
-## Reading Spectra Files
-To read Thermo or mzML files, use
-```
-ThermoStaticData staticThermo = ThermoStaticData.LoadAllStaticData(@"spectra.raw");
-ThermoDynamicData dynamicThermo = ThermoDynamicData.InitiateDynamicConnection(@"spectra.raw")
-Mzml mzmlFile = Mzml.LoadAllStaticData(@"spectra.mzML");
-```
-Both filetypes implement the same interface that has all of the necessary functionality to interact with spectra files:
-```
-IMsDataFile<IMsDataScan<IMzSpectrum<IMzPeak>>> thermoFile = new ThermoRawFile(@"spectra.RAW");
-IMsDataFile<IMsDataScan<IMzSpectrum<IMzPeak>>> mzmlFile = new Mzml(@"spectra.mzML");
-```
-## Loading Databases From Online Sources
-```
-Loaders.LoadElements("elements.dat"); // void, loads elements into static PeriodicTable class 
-IEnumerable<ModificationWithLocation> unimodMods = Loaders.LoadUnimod("unimod.dat");
-IEnumerable<ModificationWithLocation> uniprotMods = Loaders.LoadUniprot("uniprot.dat");
-```
-## Reading Protein Database Files
-To read .fasta, .xml, or .xml.gz files, use 
-```
-List<Protein> proteins = ProteinDbLoader.LoadProteinDb("proteins.xml", generateDecoys, allKnownModifications, IsContaminant, out unknownModifications);
-```
-The parameters are:
-* ```bool generateDecoys``` True if wish to generate decoy proteins.
-* ```IDictionary<string, IList<Modification>> allKnownModifications``` Dictionary of modifications with keys that correspond to modifications in the xml file.
-* ```bool IsContaminant``` True if it is a contaminant database
-* ```out Dictionary<string, Modification> unknownModifications``` An auxiliary output of modifications that were in the xml file but are not known.
+- Creating a Unified Search Engine Handling System with Handler in Consensus Dataset:
+  
+Introduced the Handler class in the Readers.ConsensusDataset namespace. This class manages different subclasses such as HolyDatasetMM, HolyDatasetMST, and HolyDatasetTopPIC. It includes methods to find executable paths and initialize these subclasses, providing a unified system for handling various search engines.
 
-## Reading Modification Files
-To load modifications from ptmlist formatted files use
+Here's some cool psuedocode I drew up in notepad++ for findEXE
+Obviously, the user shouldn't have to input the exepath at all (as seen in the main branch). Coming soon is a search function, here's some pseudocode I wrote out in Notepad for fun on a Friday night -- 
+
+``` C#
+FUNCTION FindExecutable(toolName, predefinedPaths, searchDirectories):
+
+ # 1. Check predefined paths
+
+ FOR each path IN predefinedPaths:
+
+ IF FileExists(path + "\\" + toolName):
+
+ RETURN path + "\\" + toolName // Found the executable
+
+
+
+ # 2. Recursively search common directories
+
+ FOR each directory IN searchDirectories:
+
+ result = RecursiveSearch(directory, toolName)
+
+ IF result IS NOT NULL:
+
+ RETURN result // found in recursive search
+
+ RETURN NULL // Executable not found
+
+FUNCTION RecursiveSearch(directory, toolName):
+
+ IF NOT DirectoryExists(directory):
+
+ RETURN NULL // skip if directory doesn't exist
+
+ files = GetFilesInDirectory(directory)
+
+ FOR each file IN files:
+
+ IF file == toolName:
+
+ RETURN directory + "\\" + toolName // Found
+
+ subDirs = GetSubDirectories(directory)
+
+ FOR each subDir IN subDirs:
+
+ result = RecursiveSearch(subDir, toolName)
+
+ IF result IS NOT NULL:
+
+ RETURN result
+
+ RETURN NULL //not found in a certain dir
+
 ```
-IEnumerable<ModificationWithLocation> ptms = PtmListLoader.ReadMods("ptms.txt")
-```
-# License
-Code heavily borrowed from https://github.com/dbaileychess/CSMSL and distrubuted under the appropriate license, LGPL.
+
+FindExecuteable is currently implemented! 
 
